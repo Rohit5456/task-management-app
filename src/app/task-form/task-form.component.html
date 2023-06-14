@@ -1,0 +1,72 @@
+<div class="container col-md-6">
+    <div class="row justify-content-center">
+        <form class="form-container" [formGroup]="formTask" (ngSubmit)="OnSubmit()">
+            <mat-card>
+                <mat-card-header>
+                    <mat-card-title>Welcome to Task Management Application</mat-card-title>
+                </mat-card-header>
+                <mat-card-content>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <mat-form-field>
+                                <input matInput type="text" placeholder="Enter Task Name" formControlName="title" />
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <mat-form-field>
+                                <mat-label>Choose a date</mat-label>
+                                <input matInput [matDatepicker]="picker" formControlName="dueDate" >
+                                <mat-hint>MM/DD/YYYY</mat-hint>
+                                <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                                <mat-datepicker #picker></mat-datepicker>
+                            </mat-form-field>
+                        </div>
+                    </div>
+                </mat-card-content>
+                <mat-card-actions>
+                    <button mat-raised-button="" color="primary">{{isCreatedTask ?'Add Task': 'Update Task'}}</button>
+                    <button mat-raised-button="" color="primary" (click)="onSwitchMode()"> Switch To {{isCreatedTask
+                        ?'Update Task': 'Add Task'}}</button>
+
+                </mat-card-actions>
+            </mat-card>
+        </form>
+    </div>
+    <div class="row justify-content-center">
+        <div class="col-md-12 mt-5">
+            <label for="taskSearch"><strong>Search by Task Status</strong></label>
+            <input type="text" class="form-control my-2" id="taskSearch" placeholder="Enter task status"
+                [(ngModel)]="taskSearch">
+        </div>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Task Title</th>
+                    <th>Due Date</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let task of tasks | searchTask:taskSearch; let i =index">
+                    <td>{{task.title}}</td>
+                    <td>{{task.dueDate | date:'dd/MM/yyyy'}}</td>
+                    <td>
+                        <label class="btn btn-primary" for="{{i}}" [ngClass]="{
+                            'bg-success': task.status == 'completed',
+                            'bg-danger': task.status == 'pending'
+                        }">
+                            <input type="checkbox" name="{{i}}" id="{{i}}" autocomplete="off" ngModel
+                                (change)="changeStatus($event,task)">{{task.status}}
+                        </label>
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-info" (click)="updateTask(task)">Edit</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
